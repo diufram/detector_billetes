@@ -35,7 +35,7 @@ class VolumeService : Service() {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW)
+            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
             manager.createNotificationChannel(channel)
         }
 
@@ -53,7 +53,7 @@ class VolumeService : Service() {
         return Notification.Builder(this, channelId)
             .setContentTitle("Volume Service")
             .setContentText("Listening for volume button presses")
-            .setSmallIcon(R.drawable.ic_notification) // Reemplaza con tu icono
+            .setSmallIcon(R.drawable.icono) // Reemplaza con tu icono
             .setContentIntent(pendingIntent) // Acción al hacer clic en la notificación
             .build()
     }
@@ -65,6 +65,7 @@ class VolumeService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        unregisterReceiver(volumeReceiver)
        
     }
 
@@ -75,9 +76,7 @@ class VolumeService : Service() {
     inner class VolumeReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == "android.media.VOLUME_CHANGED_ACTION") {
-            // Mostrar el Toast
-            
-
+           
             // Abrir la aplicación (opcional)
             val appIntent = Intent(context, MainActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
